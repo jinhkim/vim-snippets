@@ -25,3 +25,9 @@ fi
 echo "Tracked-On: $output_message" 
 `
 endsnippet
+
+snippet ecfw
+`#!/bin/bash
+jira_number=$(cd ../ && git branch | grep "\*" | sed 's/.*ECFW-\([0-9]\+\).*/\1/g')
+echo "ECFW-$jira_number: ${1}"`
+endsnippet
