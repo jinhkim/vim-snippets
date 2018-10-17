@@ -201,6 +201,18 @@ def write_numpy_docstring_args(args, snip):
 	snip.rv += '\n' + snip.mkline('', indent='')
 
 
+def write_init_body_super(args, classname, parents, snip):
+	parents = [p.strip() for p in parents.split(",")]
+	parents = [p for p in parents if p != 'object']
+
+	if parents:
+		snip += "super(" + classname + ", self)" + ".__init__(self)"
+		snip.rv += '\n' + snip.mkline('', indent='')
+
+	for arg in args:
+		snip += "self._%s = %s" % (arg, arg)
+
+
 def write_init_body(args, parents, snip):
 	parents = [p.strip() for p in parents.split(",")]
 	parents = [p for p in parents if p != 'object']
@@ -274,6 +286,29 @@ if args:
 	snip += '{0}'.format(triple_quotes(snip))
 
 write_init_body(args, t[2], snip)
+`
+		$0
+endsnippet
+
+
+snippet classc "class with docstrings calling super" b
+class ${1:MyClass}(${2:object}):
+
+	`!p snip.rv = triple_quotes(snip)`${3:Docstring for $1. }`!p snip.rv = triple_quotes(snip)`
+
+	def __init__(self$4):
+		`!p snip.rv = triple_quotes(snip)`${5:TODO: to be defined1.}`!p
+snip.rv = ""
+snip >> 2
+
+args = get_args(t[4])
+
+write_docstring_args(args, snip)
+if args:
+	snip.rv += '\n' + snip.mkline('', indent='')
+	snip += '{0}'.format(triple_quotes(snip))
+
+write_init_body_super(args, t[1], t[2], snip)
 `
 		$0
 endsnippet
