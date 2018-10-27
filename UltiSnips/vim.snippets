@@ -21,4 +21,20 @@ fun ${1:function_name}($2)
 	${3:" code}
 endf
 endsnippet
+
+snippet 09+ "group of one or more numbers" b
+\([0-9${1}]\+\)${2}
+endsnippet
+
+snippet 09* "group of zero or more numbers" b
+\([0-9${1}]*\)${2}
+endsnippet
+
+snippet az09+ "group of one or more alphanumeric" b
+\([a-z0-9${1}]\+\)${2}
+endsnippet
+
+snippet az09* "group of zero or more alphanumeric" b
+\([a-z0-9${1}]*\)${2}
+endsnippet
 # vim:ft=snippets:
