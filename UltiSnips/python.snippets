@@ -290,6 +290,51 @@ def write_function_docstring(t, snip):
 def get_dir_and_file_name(snip):
 	return os.getcwd().split(os.sep)[-1] + '.' + snip.basename
 
+def gen_pytest_parameters(input_arg):
+	# input_arg is actually multiple comma-separated args coming as one
+	# arg. Here we split them up into multiple args.
+	args = get_args(input_arg)
+	size = len(args)
+	if size == 0:
+		return size, 'ERR'
+	anon_snippet = '['
+	for i, arg in enumerate(args, 1):
+		anon_snippet += '$' + str(i) + (', ' if i < size else '')
+	anon_snippet += ']'
+
+	#def test_${3:description}(${4:`indent('.') ? 'self' : ''`}):
+		#${0}
+	return size, anon_snippet
+
+def write_pytest_parameters(input_args, snip):
+	args = get_args(input_args)
+	size = len(args)
+	for i, arg in enumerate(args):
+		snip.rv += str(arg) + (', ' if i < (size-1) else '')
+
+def write_pytest_parametrize(t, snip):
+	prefix = "@pytest.mark.parametrize(\'"
+	first_param = "${1:parameter}\', "
+	second_param = gen_pytest_parameters(t[1])
+	num_args = 0
+	suffix = ")"
+
+	base_index = num_args + 1
+
+	other_params = \
+	"def test_${%d:description}(${%d:`indent('.') ? 'self' : ''`}):\n\t${0}"\
+	% (base_index+3, base_index+4)
+
+	snip.expand_anon(prefix + first_param + second_param + suffix +
+			 other_params)
+
+def expand_pytest_param_args(input_args, snip):
+	#import re
+	anon_snippet = snip.buffer[snip.line].strip()
+	snip.buffer[snip.line] = ''
+	#m = re.search("\[.*\]", anon_snippet)
+	snip.expand_anon(anon_snippet)
+
 endglobal
 
 ########################################
@@ -773,6 +818,37 @@ snippet pmdoc "pocoo style module doc string" b
 """
 $0
 endsnippet
+
+#######################################################################
+#                           Pytest Snippets                           #
+#######################################################################
+
+#post_jump "if snip.tabstop == 4: expand_pytest_param_args(snip.buffer, snip)"
+snippet ptparam "test function with pytest parametrize" b
+@pytest.mark.parametrize('${1:parameter}', `!p
+num_args, anon_snippet = gen_pytest_parameters(t[1])
+snip.rv += anon_snippet
+`)
+def test_${3:description}(mocker, `!p
+write_pytest_parameters(t[1], snip)
+`${4}):
+	${0:pass}
+endsnippet
+
+snippet ptfix "pytest function fixture" b
+@pytest.fixture(${1})
+def test_${2:description}(mocker${3}):
+	${0:pass}
+endsnippet
+
+snippet ptest "pytest function" b
+def test_${1:description}(mocker${2}):
+	${0:pass}
+endsnippet
+
+#######################################################################
+#                           Other Snippets                            #
+#######################################################################
 
 snippet ecfw
 https://ecoationfw.atlassian.net/browse/ECFW-${1}
