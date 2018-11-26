@@ -121,11 +121,14 @@ def get_style(snip):
 	else: return NORMAL
 
 
-def format_arg(arg, style):
+def format_arg(arg, style, placeholder_index=None):
 	if style == DOXYGEN:
 		return "@param %s TODO" % arg
 	elif style == SPHINX:
-		return ":param %s: TODO" % arg
+		if placeholder_index is not None:
+			return ":param %s: ${%d}" % arg, placeholder_index
+		else:
+			return ":param %s: TODO" % arg
 	elif style == NORMAL:
 		return ":%s: TODO" % arg
 	elif style == GOOGLE:
@@ -135,6 +138,15 @@ def format_arg(arg, style):
 	elif style == NUMPY:
 		return "%s : TODO" % arg
 
+def format_arg_type_sphinx(arg, style, placeholder_index=None):
+	if style == SPHINX:
+		if placeholder_index is not None:
+			return ":type %s: ${%d}" % arg, placeholder_index
+		else:
+			return ":type %s: TODO" % arg
+	else:
+		return ""
+
 
 def format_return(style):
 	if style == DOXYGEN:
@@ -143,6 +155,12 @@ def format_return(style):
 		return ":returns: TODO"
 	elif style == GOOGLE:
 		return "Returns: TODO"
+
+def format_return_type(style):
+	if style == SPHINX:
+		return ":rtype: TODO"
+	else:
+		return ""
 
 
 def write_docstring_args(args, snip):
@@ -158,6 +176,8 @@ def write_docstring_args(args, snip):
 		write_google_docstring_args(args, snip)
 	elif style == NUMPY:
 		write_numpy_docstring_args(args, snip)
+	elif style == SPHINX:
+		write_sphinx_docstring_args(args, snip)
 	else:
 		for arg in args:
 			snip += format_arg(arg, style)
@@ -199,6 +219,13 @@ def write_numpy_docstring_args(args, snip):
 		for kwarg in kwargs:
 			snip += format_arg(kwarg, NUMPY) + ', optional'
 	snip.rv += '\n' + snip.mkline('', indent='')
+
+
+def write_sphinx_docstring_args(args, snip):
+	for arg in args:
+		snip += format_arg(arg, SPHINX)
+	for arg_type in args:
+		snip += format_arg_type_sphinx(arg_type, SPHINX)
 
 
 def write_init_body_super(args, classname, parents, snip):
@@ -256,6 +283,7 @@ def write_function_docstring(t, snip):
 		snip += 'TODO'
 	else:
 		snip += format_return(style)
+		snip += format_return_type(style)
 	snip.rv += '\n' + snip.mkline('', indent='')
 	snip += triple_quotes(snip)
 
