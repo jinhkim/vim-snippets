@@ -13,7 +13,7 @@ endsnippet
 snippet trkk
 `#!/bin/bash
 branch_name=$(cd ../ && git symbolic-ref --short HEAD)
-jira_number=$(echo $branch_name | sed 's/[a-zA-Z/\]\+-\([0-9]\+\).*/\1/g')
+jira_number=$(echo $branch_name | sed 's/\(.*\)\([a-zA-Z/\]\+\)-\([0-9]\+\).*/\3/g')
 jira_url=$(echo "https://ecoationfw.atlassian.net/browse/ECFW-$jira_number")
 url_result=$(get_ecfw_ticket_status ECFW-$jira_number)
 output_message=""
