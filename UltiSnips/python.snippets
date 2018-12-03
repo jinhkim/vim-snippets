@@ -989,4 +989,15 @@ snippet rle "rospy logerr"
 rospy.logerr("${1}")
 endsnippet
 
+#######################################################################
+#                    Extra Documentation Snippets                     #
+#######################################################################
+
+snippet docparam "documentation param" b
+:param ${1:${VISUAL}}: ${2}
+endsnippet
+
+snippet doctype "documentation type (for Sphinx)"
+:type ${1:${VISUAL}}: ${2}
+endsnippet
 # vim:ft=snippets:
