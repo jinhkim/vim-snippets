@@ -28,6 +28,6 @@ endsnippet
 
 snippet ecfw
 `#!/bin/bash
-jira_number=$(cd ../ && git branch | grep "\*" | sed 's/.*ECFW-\([0-9]\+\).*/\1/g')
+jira_number=$(cd ../ && git symbolic-ref --short HEAD | sed 's/.*ECFW-\([0-9]\+\).*/\1/g')
 echo "ECFW-$jira_number: ${1}"`
 endsnippet
