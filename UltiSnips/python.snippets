@@ -993,6 +993,11 @@ snippet rle "rospy logerr"
 rospy.logerr("${1}")
 endsnippet
 
+snippet oswalk "os walk"
+for ${1:path}, ${2:dirs}, ${3:files} in os.walk(${4}):
+	${0:pass}
+endsnippet
+
 #######################################################################
 #                    Extra Documentation Snippets                     #
 #######################################################################
