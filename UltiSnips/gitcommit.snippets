@@ -15,7 +15,7 @@ snippet trkk
 branch_name=$(cd ../ && git symbolic-ref --short HEAD)
 jira_number=$(echo $branch_name | sed 's/\([^a-zA-Z/\]*\)\([a-zA-Z/\]\+\)-\([0-9]\+\).*/\3/g')
 board_code=$(echo $branch_name | sed 's/\([^a-zA-Z/\]*\)\([a-zA-Z/\]\+\)-\([0-9]\+\).*/\2/g')
-jira_url=$(echo "https://ecoationfw.atlassian.net/browse/$board_code-$jira_number")
+jira_url=$(echo "https://ecoation.atlassian.net/browse/$board_code-$jira_number")
 url_result=$(get_ecfw_ticket_status $board_code-$jira_number)
 output_message=""
 if [[ $url_result != "200" ]]; then
@@ -29,12 +29,18 @@ endsnippet
 
 snippet ecfw
 `#!/bin/bash
-jira_number=$(cd ../ && git symbolic-ref --short HEAD | sed 's/.*ECFW-\([0-9]\+\).*/\1/g')
-echo "ECFW-$jira_number: ${1}"`
+jira_number=$(cd ../ && git symbolic-ref --short HEAD | sed 's/[^A-Z]*\([A-Z]\+\)-\([0-9]\+\).*/\1-\2/g')
+echo "$jira_number: ${1}"`
 endsnippet
 
 snippet fr
 `#!/bin/bash
-jira_number=$(cd ../ && git symbolic-ref --short HEAD | sed 's/.*FR-\([0-9]\+\).*/\1/g')
-echo "FR-$jira_number: ${1}"`
+jira_number=$(cd ../ && git symbolic-ref --short HEAD | sed 's/[^A-Z]*\([A-Z]\+\)-\([0-9]\+\).*/\1-\2/g')
+echo "$jira_number: ${1}"`
+endsnippet
+
+snippet os
+`#!/bin/bash
+jira_number=$(cd ../ && git symbolic-ref --short HEAD | sed 's/[^A-Z]*\([A-Z]\+\)-\([0-9]\+\).*/\1-\2/g')
+echo "$jira_number: ${1}"`
 endsnippet
