@@ -13,10 +13,17 @@ endsnippet
 snippet trkk
 `#!/bin/bash
 branch_name=$(cd ../ && git symbolic-ref --short HEAD)
-jira_number=$(echo $branch_name | sed 's/\([^a-zA-Z/\]*\)\([a-zA-Z/\]\+\)-\([0-9]\+\).*/\3/g')
-board_code=$(echo $branch_name | sed 's/\([^a-zA-Z/\]*\)\([a-zA-Z/\]\+\)-\([0-9]\+\).*/\2/g')
-jira_url=$(echo "https://ecoation.atlassian.net/browse/$board_code-$jira_number")
-url_result=$(get_ecfw_ticket_status $board_code-$jira_number)
+if [[ $(uname -s) == *"Darwin"* ]]; then
+	sed_command='sed -E'
+	pattern='([^A-Z]*)([A-Z]+)-([0-9]+).*'
+else
+	sed_command='sed'
+	pattern='\([^a-zA-Z/\]*\)\([a-zA-Z/\]\+\)-\([0-9]\+\).*'
+fi
+jira_number=$(echo $branch_name | $sed_command "s/$pattern/\3/g")
+board_code=$(echo $branch_name | $sed_command "s/$pattern/\2/g")
+jira_url=$(echo "https://rivianautomotivellc.atlassian.net/browse/$board_code-$jira_number")
+url_result=$(get_vsd_ticket_status $board_code-$jira_number)
 output_message=""
 if [[ $url_result != "200" ]]; then
 	output_message="Status $url_result, JIRA ticket does not exist"
@@ -27,20 +34,28 @@ echo "$output_message"
 `
 endsnippet
 
-snippet ecfw
-`#!/bin/bash
-jira_number=$(cd ../ && git symbolic-ref --short HEAD | sed 's/[^A-Z]*\([A-Z]\+\)-\([0-9]\+\).*/\1-\2/g')
-echo "$jira_number: ${1}"`
-endsnippet
-
 snippet fr
 `#!/bin/bash
-jira_number=$(cd ../ && git symbolic-ref --short HEAD | sed 's/[^A-Z]*\([A-Z]\+\)-\([0-9]\+\).*/\1-\2/g')
-echo "$jira_number: ${1}"`
+if [[ $(uname -s) == *"Darwin"* ]]; then
+	sed_command='sed -E'
+	pattern='([^A-Z]*)([A-Z]+)-([0-9]+).*'
+else
+	sed_command='sed'
+	pattern='\([^a-zA-Z/\]*\)\([a-zA-Z/\]\+\)-\([0-9]\+\).*'
+fi
+jira_ticket_number=$(cd ../ && git symbolic-ref --short HEAD | $sed_command "s/$pattern/\2-\3/g")
+echo "$jira_ticket_number: ${1}"`
 endsnippet
 
-snippet os
+snippet vsd
 `#!/bin/bash
-jira_number=$(cd ../ && git symbolic-ref --short HEAD | sed 's/[^A-Z]*\([A-Z]\+\)-\([0-9]\+\).*/\1-\2/g')
-echo "$jira_number: ${1}"`
+if [[ $(uname -s) == *"Darwin"* ]]; then
+	sed_command='sed -E'
+	pattern='([^A-Z]*)([A-Z]+)-([0-9]+).*'
+else
+	sed_command='sed'
+	pattern='\([^a-zA-Z/\]*\)\([a-zA-Z/\]\+\)-\([0-9]\+\).*'
+fi
+jira_ticket_number=$(cd ../ && git symbolic-ref --short HEAD | $sed_command "s/$pattern/\2-\3/g")
+echo "$jira_ticket_number: ${1}"`
 endsnippet
