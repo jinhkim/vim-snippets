@@ -18,7 +18,11 @@ if [[ $(uname -s) == *"Darwin"* ]]; then
 	pattern='([^A-Z]*)([A-Z]+)-([0-9]+).*'
 else
 	sed_command='sed'
-	pattern='\([^a-zA-Z/\]*\)\([a-zA-Z/\]\+\)-\([0-9]\+\).*'
+	if [[ $branch_name == *"/"* ]]; then
+		pattern='[a-zA-Z]\+\/[a-zA-Z]\+\/\([^a-zA-Z/\]*\)\([a-zA-Z/\]\+\)-\([0-9]\+\).*'
+	else
+		pattern='\([^a-zA-Z/\]*\)\([a-zA-Z/\]\+\)-\([0-9]\+\).*'
+	fi
 fi
 jira_number=$(echo $branch_name | $sed_command "s/$pattern/\3/g")
 board_code=$(echo $branch_name | $sed_command "s/$pattern/\2/g")
