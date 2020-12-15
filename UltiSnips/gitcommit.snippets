@@ -15,7 +15,7 @@ snippet trkk
 branch_name=$(cd ../ && git symbolic-ref --short HEAD)
 if [[ $(uname -s) == *"Darwin"* ]]; then
 	sed_command='sed -E'
-	pattern='([^A-Z]*)([A-Z]+)-([0-9]+).*'
+	pattern='([a-zA-Z/]+)\/([A-Z]+)-([0-9]+)[^0-9]*'
 else
 	sed_command='sed'
 	if [[ $branch_name == *"/"* ]]; then
@@ -42,13 +42,13 @@ snippet fr
 `#!/bin/bash
 if [[ $(uname -s) == *"Darwin"* ]]; then
 	sed_command='sed -E'
-	pattern='([^A-Z]*)([A-Z]+)-([0-9]+).*'
+	pattern='([a-zA-Z/]+)\/([A-Z]+)-([0-9]+)[^0-9]*'
 else
 	sed_command='sed'
 	pattern='\([^a-zA-Z/\]*\)\([a-zA-Z/\]\+\)-\([0-9]\+\).*'
 fi
 jira_ticket_number=$(cd ../ && git symbolic-ref --short HEAD | $sed_command "s/$pattern/\2-\3/g")
-echo "$jira_ticket_number: ${1}"`
+echo "[$jira_ticket_number]: ${1}"`
 endsnippet
 
 snippet vsd
@@ -62,4 +62,18 @@ else
 fi
 jira_ticket_number=$(cd ../ && git symbolic-ref --short HEAD | $sed_command "s/$pattern/\2-\3/g")
 echo "$jira_ticket_number: ${1}"`
+endsnippet
+
+snippet rpv
+=========================
+RPV v${1}:
+=========================
+${2}
+endsnippet
+
+snippet r1
+=========================
+R1 v${1}:
+=========================
+${2}
 endsnippet
